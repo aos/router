@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/binary"
+	"fmt"
 	"log"
 	"net"
 
-	"github.com/songgao/water"
+	"github.com/aos/water"
 )
 
 // TAP interface works on L2 (read/write ethernet frames)
@@ -26,8 +27,11 @@ const (
 func main() {
 	config := water.Config{
 		DeviceType: water.TAP,
+		PlatformSpecificParams: water.PlatformSpecificParams{
+			Name:    "louie0",
+			Persist: true,
+		},
 	}
-	config.Name = "louie0"
 
 	ifce, err := water.New(config)
 	if err != nil {
@@ -42,7 +46,14 @@ func main() {
 		Payload:     []byte("hello world"),
 	}
 
-	buffer := make([]byte, 64)
+	m, err := ifce.GetMAC()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("MAC address:", m)
+
+	ifce.SetMAC("d7:db:b0:42:2c:7e")
+	buffer := make([]byte, 65)
 	for {
 		n, err := ifce.Read(buffer)
 		if err != nil {
