@@ -28,8 +28,7 @@ func main() {
 	config := water.Config{
 		DeviceType: water.TAP,
 		PlatformSpecificParams: water.PlatformSpecificParams{
-			Name:    "louie0",
-			Persist: true,
+			Name: "louie0",
 		},
 	}
 
